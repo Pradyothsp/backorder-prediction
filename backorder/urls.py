@@ -1,7 +1,7 @@
-from backorder.views import index, PredictView1, PredictView2
+from backorder.views import index, PredictView
 from django.urls import path
 
 urlpatterns = [
     path('', index, name='index'),
-    path('predict/', PredictView2.as_view(), name='predict')
+    path('predict/', PredictView.as_view(), name='predict')
 ]
