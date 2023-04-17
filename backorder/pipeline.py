@@ -4,10 +4,6 @@ import joblib
 import numpy as np
 import pandas as pd
 
-num_col_list = ['national_inv', 'lead_time', 'in_transit_qty', 'forecast_3_month', 'forecast_6_month',
-                'forecast_9_month', 'sales_1_month', 'sales_3_month', 'sales_6_month', 'sales_9_month',
-                'min_bank', 'pieces_past_due', 'perf_6_month_avg', 'perf_12_month_avg', 'local_bo_qty']
-
 
 class BackorderPredictor:
     def __init__(self):
@@ -20,11 +16,12 @@ class BackorderPredictor:
 
     def _load_model_files(self):
         # Fetching the best features
-        self.best_feat = joblib.load('models/test_best_feat.pkl').tolist()
+        self.best_feat = joblib.load('backorder/model/test_best_feat.pkl')
+        self.best_feat = self.best_feat.tolist()
 
         # Fetching the trained standardization object instance
-        self.sc = joblib.load('models/sc.pkl')
-        self.model = joblib.load('models/backorder_best_model.pkl')
+        self.sc = joblib.load('backorder/model/sc.pkl')
+        self.model = joblib.load('backorder/model/backorder_best_model.pkl')
 
     def _encode_bool_columns(self, df):
         dict_map_bool = {'Yes': 1.0, 'No': 0.0}
@@ -54,14 +51,14 @@ class BackorderPredictor:
         return df
 
     def _perform_standardization(self, df):
-        # TODO: .values is not added
-        df_test_num_sc = self.sc.transform(df[self.num_col_list])
-        df_test_num_sc = pd.DataFrame(df_test_num_sc, columns=self.num_col_list)
+        df_test_num_sc = self.sc.transform(df[self.num_col_list].values)
+        df_test_num_sc = pd.DataFrame(df_test_num_sc, index=df.index, columns=self.num_col_list)
         return df_test_num_sc
 
-    def _perform_feature_selection(self, df):
-        df_test_num_sc = df[self.best_feat]
-        return df_test_num_sc
+    # def _perform_feature_selection(self, df):
+    #     df_test_num_sc = df[self.best_feat]
+    #
+    #     return df_test_num_sc
 
     def _add_features(self, df):
         def add(df, num_cols):
@@ -118,40 +115,49 @@ class BackorderPredictor:
         df = self._square_features(df)
         df = self._square_root_features(df)
         df = self._log_features(df)
-        return df
+        df_test_final = df[self.best_feat]
+        return df, df_test_final
 
-    def get_df_test_final(self, df):
-        return df[self.best_feat]
+    # def get_df_test_final(self, df):
+    #     return df[self.best_feat]
 
     def get_ytest(self, df_test_trans):
         return df_test_trans['went_on_backorder'].values
 
     def preprocess(self, df):
+        self._load_model_files()
         df = self._encode_bool_columns(df)
         df = self._replace_perf_cols(df)
         df = self._drop_sku_col(df)
         df = self._handle_missing_values(df)
         df = self._perform_standardization(df)
-        df = self._perform_feature_selection(df)
-        df = self.perform_feature_engineering(df)
-        df_test_final = self.get_df_test_final(df)
+        df, df_test_final = self.perform_feature_engineering(df)
+        # df = self._perform_feature_selection(df)
+        # print("Step 1")
+        # df_test_final = self.get_df_test_final(df)
 
         return df_test_final, self.get_ytest(df)
 
     def predict(self, df):
         df_test_final, y_test = self.preprocess(df)
-        return y_test, self.model.predict(df_test_final)
+        y_pred_test = self.model.predict(df_test_final)
+        return y_test.tolist(), y_pred_test.tolist()
+
+
+num_col_list = ['national_inv', 'lead_time', 'in_transit_qty', 'forecast_3_month', 'forecast_6_month',
+                'forecast_9_month', 'sales_1_month', 'sales_3_month', 'sales_6_month', 'sales_9_month', 'min_bank',
+                'pieces_past_due', 'perf_6_month_avg', 'perf_12_month_avg', 'local_bo_qty']
 
 
 def final_fun_1(df, return_actual=False):
     df_test = df.copy()
 
     # Fetching the best features
-    best_feat = joblib.load('backorder/models/test_best_feat.pkl')
+    best_feat = joblib.load('backorder/model/test_best_feat.pkl')
     best_feat = best_feat.tolist()
 
     # Fetching the trained standardization object instance
-    sc = joblib.load('backorder/models/sc.pkl')
+    sc = joblib.load('backorder/model/sc.pkl')
     df_test = df_test[df_test['went_on_backorder'].notna()]
 
     # Encode categorical columns with values Yes and No to 1 and 0 respectively
@@ -163,7 +169,8 @@ def final_fun_1(df, return_actual=False):
     df_test['ppap_risk'] = df_test['ppap_risk'].map(dict_map_bool)
     df_test['stop_auto_buy'] = df_test['stop_auto_buy'].map(dict_map_bool)
     df_test['rev_stop'] = df_test['rev_stop'].map(dict_map_bool)
-    df_test['went_on_backorder'] = df_test['went_on_backorder'].map(dict_map_bool)
+    df_test['went_on_backorder'] = df_test['went_on_backorder'].map(
+        dict_map_bool)
 
     # Replacing -99 in perfomance columns with nan
     df_test.perf_6_month_avg.replace({-99.0: np.nan}, inplace=True)
@@ -172,12 +179,17 @@ def final_fun_1(df, return_actual=False):
 
     # Handling missing values with median values
     df_test.lead_time.replace(to_replace=np.nan, value=8, inplace=True)
-    df_test.perf_6_month_avg.replace(to_replace=-99, value=.85, inplace=True)
-    df_test.perf_12_month_avg.replace(to_replace=-99, value=.83, inplace=True)
+    df_test.perf_6_month_avg.replace(
+        to_replace=np.nan, value=.85, inplace=True)
+    df_test.perf_12_month_avg.replace(
+        to_replace=np.nan, value=.83, inplace=True)
 
     # Performing Standardization
     df_test_num_sc = sc.transform(df_test[num_col_list].values)
-    df_test_num_sc = pd.DataFrame(df_test_num_sc, index=df_test.index, columns=num_col_list)
+    df_test_num_sc = pd.DataFrame(
+        df_test_num_sc, index=df_test.index, columns=num_col_list)
+
+    print(df_test_num_sc.isnull().sum())
 
     # Assigning numerical columns to original dataframe
     for i in num_col_list:
@@ -187,7 +199,7 @@ def final_fun_1(df, return_actual=False):
     def add(df, num_cols):
         for i in num_cols:
             for j in num_cols:
-                if i != j:
+                if (i != j):
                     df[i + '_' + j + '_add'] = df[i] + df[j]
         return df
 
@@ -195,7 +207,7 @@ def final_fun_1(df, return_actual=False):
     def mult(df, num_cols):
         for i in num_cols:
             for j in num_cols:
-                if i != j:
+                if (i != j):
                     df[i + '_' + j + '_mult'] = df[i] * df[j]
         return df
 
@@ -234,8 +246,8 @@ def final_fun_1(df, return_actual=False):
     df_test_final = df_test_trans[best_feat]
     y_test = df_test_trans['went_on_backorder'].values
 
-    filename = 'backorder/models/backorder_best_model.pkl'
+    filename = 'backorder/model/backorder_best_model.pkl'
     model = joblib.load(filename)
     y_pred_test = model.predict(df_test_final)
 
-    return y_test, y_pred_test
+    return y_test.tolist(), y_pred_test.tolist()
