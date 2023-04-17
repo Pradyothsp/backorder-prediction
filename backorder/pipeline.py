@@ -1,7 +1,8 @@
+import warnings
+
 import joblib
 import numpy as np
 import pandas as pd
-import warnings
 
 warnings.filterwarnings('ignore')
 
@@ -21,6 +22,8 @@ class BackorderPredictor:
 
         # Fetching the trained standardization object instance
         self.sc = joblib.load('backorder/model/sc.pkl')
+
+        # Fetching the trained model
         self.model = joblib.load('backorder/model/backorder_best_model.pkl')
 
     def _encode_bool_columns(self, df_test):
@@ -114,12 +117,10 @@ class BackorderPredictor:
         return y_test
 
     def preprocessing(self, df_test):
-        self._load_model_files()
-
         # Encode categorical columns with values Yes and No to 1 and 0 respectively
         df_test = self._encode_bool_columns(df_test)
 
-        # Replacing -99 in perfomance columns with nan
+        # Replacing -99 in performance columns with nan
         df_test = self._replace_performance_columns(df_test)
 
         # Dropping sku column

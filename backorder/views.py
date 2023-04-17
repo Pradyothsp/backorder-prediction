@@ -1,5 +1,4 @@
 import pandas as pd
-from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -8,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from backorder.pipeline import BackorderPredictor
 
 backorder_predictor = BackorderPredictor()
+backorder_predictor._load_model_files()
 
 
 def index(request):
@@ -26,6 +26,7 @@ class PredictView(View):
         df = pd.read_csv(file)
 
         y_pred, y_actual = backorder_predictor.predict(df)
+
         context = {
             'y_pred': y_pred,
             'y_actual': y_actual,
