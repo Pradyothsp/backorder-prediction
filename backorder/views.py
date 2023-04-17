@@ -19,8 +19,8 @@ class PredictView(View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs) -> JsonResponse:
-        df = pd.read_csv('Test_Dataset.csv')
-        print(df.head())
+        file = request.FILES['file']
+        df = pd.read_csv(file)
 
         y_pred, y_actual = backorder_predictor.predict(df)
         return JsonResponse({'y_pred': y_pred, 'y_actual': y_actual})
