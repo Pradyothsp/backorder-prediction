@@ -16,11 +16,18 @@ def index(request):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class PredictView(View):
-    http_method_names = ['post']
+    http_method_names = ['post', 'get']
 
-    def post(self, request, *args, **kwargs) -> JsonResponse:
+    def get(self, request, *args, **kwargs):
+        return render(request, 'predict.html')
+
+    def post(self, request, *args, **kwargs):
         file = request.FILES['file']
         df = pd.read_csv(file)
 
         y_pred, y_actual = backorder_predictor.predict(df)
-        return JsonResponse({'y_pred': y_pred, 'y_actual': y_actual})
+        context = {
+            'y_pred': y_pred,
+            'y_actual': y_actual,
+        }
+        return render(request, 'result.html', context)

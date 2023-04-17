@@ -1,11 +1,10 @@
-    <html>
-    <body>
+<html>
+<body>
+<h1> Backorder Prediction </h1>
 
-            <h2> Backorder Prediction </h2>
-
-                <form action="/final_fun" method="post" enctype="multipart/form-data">
-                    <input type="file" name="data_file" />
-                    <input type="submit" value="Predicted values"/>
-                </form>
-    </body>
-    </html>
+<form action="/predict/" method="post" enctype="multipart/form-data">
+    <input type="file" name="file"/>
+    <input type="submit" value="Predicted values"/>
+</form>
+</body>
+</html>
