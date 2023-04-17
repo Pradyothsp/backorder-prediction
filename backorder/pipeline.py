@@ -1,5 +1,3 @@
-from itertools import combinations
-
 import joblib
 import numpy as np
 import pandas as pd
@@ -16,131 +14,102 @@ class BackorderPredictor:
 
     def _load_model_files(self):
         # Fetching the best features
-        self.best_feat = joblib.load('backorder/model/test_best_feat.pkl')
-        self.best_feat = self.best_feat.tolist()
+        self.best_feat = joblib.load('backorder/model/test_best_feat.pkl').tolist()
 
         # Fetching the trained standardization object instance
         self.sc = joblib.load('backorder/model/sc.pkl')
         self.model = joblib.load('backorder/model/backorder_best_model.pkl')
 
     def _encode_bool_columns(self, df):
-        dict_map_bool = {'Yes': 1.0, 'No': 0.0}
 
-        df['deck_risk'] = df['deck_risk'].map(dict_map_bool)
-        df['potential_issue'] = df['potential_issue'].map(dict_map_bool)
-        df['oe_constraint'] = df['oe_constraint'].map(dict_map_bool)
-        df['ppap_risk'] = df['ppap_risk'].map(dict_map_bool)
-        df['stop_auto_buy'] = df['stop_auto_buy'].map(dict_map_bool)
-        df['rev_stop'] = df['rev_stop'].map(dict_map_bool)
-        df['went_on_backorder'] = df['went_on_backorder'].map(dict_map_bool)
-
+    def add(self, df, num_cols):
+        for i in num_cols:
+            for j in num_cols:
+                if i != j:
+                    df[i + '_' + j + '_add'] = df[i] + df[j]
         return df
 
-    def _replace_perf_cols(self, df):
-        df.perf_6_month_avg.replace({-99.0: np.nan}, inplace=True)
-        df.perf_12_month_avg.replace({-99.0: np.nan}, inplace=True)
+    def mult(self, df, num_cols):
+        for i in num_cols:
+            for j in num_cols:
+                if i != j:
+                    df[i + '_' + j + '_mult'] = df[i] * df[j]
         return df
 
-    def _drop_sku_col(self, df):
-        return df.drop(columns=['sku'])
-
-    def _handle_missing_values(self, df):
-        df.lead_time.replace(to_replace=np.nan, value=8, inplace=True)
-        df.perf_6_month_avg.replace(to_replace=-99, value=.85, inplace=True)
-        df.perf_12_month_avg.replace(to_replace=-99, value=.83, inplace=True)
+    # Function to perform inverse of features
+    def inv(self, df, num_cols):
+        for i in num_cols:
+            df[i + '_' + 'inv'] = 1 / (df[i] + 0.001)
         return df
 
-    def _perform_standardization(self, df):
-        df_test_num_sc = self.sc.transform(df[self.num_col_list].values)
-        df_test_num_sc = pd.DataFrame(df_test_num_sc, index=df.index, columns=self.num_col_list)
-        return df_test_num_sc
+    # Function to perform square of features
+    def square(self, df, num_cols):
+        for i in num_cols:
+            df[i + '_' + 'square'] = df[i] * df[i]
+        return df
 
-    # def _perform_feature_selection(self, df):
-    #     df_test_num_sc = df[self.best_feat]
-    #
-    #     return df_test_num_sc
+    # Function to perform square root of features
+    def sqrt(self, df, num_cols):
+        for i in num_cols:
+            df[i + '_' + 'square_root'] = np.sqrt(abs(df[i]))
+        return df
 
-    def _add_features(self, df):
-        def add(df, num_cols):
-            for i, j in combinations(num_cols, 2):
-                df[f'{i}_{j}_add'] = df[i] + df[j]
-            return df
-
-        return add(df, self.num_col_list)
-
-    def _multiply_features(self, df):
-        def mult(df, num_cols):
-            for i, j in combinations(num_cols, 2):
-                df[f'{i}_{j}_mul'] = df[i] * df[j]
-            return df
-
-        return mult(df, self.num_col_list)
-
-    def _inverse_features(self, df):
-        def inv(df, num_cols):
-            for i in num_cols:
-                df[f'{i}_inv'] = 1 / (df[i] + 0.001)
-            return df
-
-        return inv(df, self.num_col_list)
-
-    def _square_features(self, df):
-        def square(df, num_cols):
-            for i in num_cols:
-                df[f'{i}_square'] = df[i] ** 2
-            return df
-
-        return square(df, self.num_col_list)
-
-    def _square_root_features(self, df):
-        def sqrt(df, num_cols):
-            for i in num_cols:
-                df[f'{i}_sqrt'] = np.sqrt(abs(df[i]))
-            return df
-
-        return sqrt(df, self.num_col_list)
-
-    def _log_features(self, df):
-        def log(df, num_cols):
-            for i in num_cols:
-                df[f'{i}_log'] = (np.log(abs(df[i]) + 1))
-            return df
-
-        return log(df, self.num_col_list)
-
-    def perform_feature_engineering(self, df):
-        df = self._add_features(df)
-        df = self._multiply_features(df)
-        df = self._inverse_features(df)
-        df = self._square_features(df)
-        df = self._square_root_features(df)
-        df = self._log_features(df)
-        df_test_final = df[self.best_feat]
-        return df, df_test_final
-
-    # def get_df_test_final(self, df):
-    #     return df[self.best_feat]
-
-    def get_ytest(self, df_test_trans):
-        return df_test_trans['went_on_backorder'].values
-
-    def preprocess(self, df):
-        self._load_model_files()
-        df = self._encode_bool_columns(df)
-        df = self._replace_perf_cols(df)
-        df = self._drop_sku_col(df)
-        df = self._handle_missing_values(df)
-        df = self._perform_standardization(df)
-        df, df_test_final = self.perform_feature_engineering(df)
-        # df = self._perform_feature_selection(df)
-        # print("Step 1")
-        # df_test_final = self.get_df_test_final(df)
-
-        return df_test_final, self.get_ytest(df)
+    # Function to perform log of features
+    def log(self, df, num_cols):
+        for i in num_cols:
+            df[i + '_' + 'log'] = (np.log(abs(df[i]) + 1))
+        return df
 
     def predict(self, df):
-        df_test_final, y_test = self.preprocess(df)
+        self._load_model_files()
+        df_test = df.copy()
+
+        # Encode categorical columns with values Yes and No to 1 and 0 respectively
+        dict_map_bool = {'Yes': 1.0, 'No': 0.0}
+
+        df_test['deck_risk'] = df_test['deck_risk'].map(dict_map_bool)
+        df_test['potential_issue'] = df_test['potential_issue'].map(dict_map_bool)
+        df_test['oe_constraint'] = df_test['oe_constraint'].map(dict_map_bool)
+        df_test['ppap_risk'] = df_test['ppap_risk'].map(dict_map_bool)
+        df_test['stop_auto_buy'] = df_test['stop_auto_buy'].map(dict_map_bool)
+        df_test['rev_stop'] = df_test['rev_stop'].map(dict_map_bool)
+        df_test['went_on_backorder'] = df_test['went_on_backorder'].map(
+            dict_map_bool)
+
+        # Replacing -99 in perfomance columns with nan
+        df_test.perf_6_month_avg.replace({-99.0: np.nan}, inplace=True)
+        df_test.perf_12_month_avg.replace({-99.0: np.nan}, inplace=True)
+        df_test = df_test.drop(columns=['sku'])
+
+        # Handling missing values with median values
+        df_test.lead_time.replace(to_replace=np.nan, value=8, inplace=True)
+        df_test.perf_6_month_avg.replace(
+            to_replace=np.nan, value=.85, inplace=True)
+        df_test.perf_12_month_avg.replace(
+            to_replace=np.nan, value=.83, inplace=True)
+
+        # Performing Standardization
+        df_test_num_sc = self.sc.transform(df_test[self.num_col_list].values)
+        df_test_num_sc = pd.DataFrame(df_test_num_sc, index=df_test.index, columns=self.num_col_list)
+
+        print(df_test_num_sc.isnull().sum())
+
+        # Assigning numerical columns to original dataframe
+        for i in self.num_col_list:
+            df_test[i] = df_test_num_sc[i]
+
+        df_test_trans = self.add(df_test, self.num_col_list)
+        df_test_trans = self.mult(df_test_trans, self.num_col_list)
+        df_test_trans = self.inv(df_test_trans, self.num_col_list)
+        df_test_trans = self.square(df_test_trans, self.num_col_list)
+        df_test_trans = self.sqrt(df_test_trans, self.num_col_list)
+        df_test_trans = self.log(df_test_trans, self.num_col_list)
+
+        df_test_final = df_test_trans[self.best_feat]
+        y_test = df_test_trans['went_on_backorder'].values
+
         y_pred_test = self.model.predict(df_test_final)
+
         return y_test.tolist(), y_pred_test.tolist()
 
 

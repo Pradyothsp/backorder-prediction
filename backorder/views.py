@@ -32,9 +32,6 @@ class PredictView1(View):
         # print("Hello World")
         # print(df.head)
         y_pred, y_actual = final_fun_1(df, return_actual=True)
-        # y_pred, y_actual = y_pred.tolist(), y_actual.tolist()
-
-        print(y_pred, y_actual)
         return JsonResponse({'y_pred': y_pred, 'y_actual': y_actual})
 
 

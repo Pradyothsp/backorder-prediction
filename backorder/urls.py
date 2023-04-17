@@ -3,5 +3,5 @@ from django.urls import path
 
 urlpatterns = [
     path('', index, name='index'),
-    path('predict/', PredictView1.as_view(), name='predict')
+    path('predict/', PredictView2.as_view(), name='predict')
 ]
