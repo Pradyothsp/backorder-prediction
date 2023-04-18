@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "backorder/base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backorder Prediction - Introduction</title>
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-</head>
+{% block title %}Predict Backorders{% endblock %}
 
-<body>
-<header>
-    <h1>Backorder Prediction System</h1>
-</header>
-
-<main>
+{% block content %}
     <section class="introduction">
         <h2>Welcome to the Backorder Prediction System</h2>
         <article class="article1">
@@ -45,7 +33,8 @@
             <p>Make data-driven decisions to support business growth.</p>
         </article>
 
-        <button onclick="window.location.href='{% url 'predict' %}'" class="wiggle-button">Start Predicting Here</button>
+        <button onclick="window.location.href='{% url 'predict' %}'" class="wiggle-button">Start Predicting Here
+        </button>
 
         <h2>Team Members</h2>
         <div class="team-container">
@@ -71,3 +60,6 @@
                         challenges.</p>
                 </div>
             </article>
+        </div>
+    </section>
+{% endblock %}

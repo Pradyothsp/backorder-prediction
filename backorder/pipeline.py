@@ -149,11 +149,5 @@ class BackorderPredictor:
 
     def predict(self, df):
         df_test_final, y_test = self.preprocessing(df)
-        print(df_test_final.shape)
-        print("I am good till here before"*5)
-        num_nans = df_test_final.isna().sum().sum()
-        print(f"Number of NaN values in df_test_final: {num_nans}")
-
         y_pred_test = self.model.predict(df_test_final)
-        print("I am good till here after"*5)
         return y_test.tolist(), y_pred_test.tolist()
