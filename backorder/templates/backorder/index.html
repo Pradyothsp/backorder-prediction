@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "backorder/header.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Backorder Prediction - Introduction</title>
-{#    {% load static %}#}
-{#    <link rel="stylesheet" href="{% static 'backorder/styles.css' %}">#}
-</head>
+{% block title %}About Us{% endblock %}
 
-<body>
-<header>
-    <h1>Backorder Prediction System</h1>
-</header>
-
-<main>
+{% block content %}
     <section class="introduction">
         <h2>Welcome to the Backorder Prediction System</h2>
         <article class="article1">
@@ -45,7 +33,7 @@
             <p>Make data-driven decisions to support business growth.</p>
         </article>
 
-        <a href="{% url 'predict' %}" class="wiggle-button">Start Predicting Here</a>
+        <button onclick="window.location.href='{% url 'predict' %}'" class="wiggle-button">Start Predicting Here</button>
 
         <h2>Team Members</h2>
         <div class="team-container">
@@ -54,7 +42,7 @@
                     <h3 class="team-member-name">Pradyoth</h3>
                     <p class="team-member-role">Developer</p>
                     <p class="team-member-bio"> Pradyoth is a graduate student currently pursuing a Master's degree in
-                        Data Science at the University of Massachusetts Dartmouth (UMassD).Pradyoth's academic focus
+                        Data Science at the University of Massachusetts Dartmouth (UMassD).Pradhyoth's academic focus
                         includes machine learning, data visualization, and statistical analysis. With a strong
                         foundation in programming and data analysis, he is eager to apply his skills to real-world data
                         challenges. </p>
@@ -71,3 +59,18 @@
                         challenges.</p>
                 </div>
             </article>
+            <article class="article2">
+                <div class="team-member">
+                    <h3 class="team-member-name">Bharath</h3>
+                    <p class="team-member-role">Developer</p>
+                    <p class="team-member-bio">Bharath is a graduate student currently pursuing a Master's degree in
+                        Data Science at the University of Massachusetts Dartmouth (UMassD).Bharath's academic focus
+                        includes machine learning, data visualization, and statistical analysis. With a strong
+                        foundation in programming and data analysis, he is eager to apply his skills to real-world data
+                        challenges.</p>
+                </div>
+            </article>
+        </div>
+    </section>
+
+{% endblock %}

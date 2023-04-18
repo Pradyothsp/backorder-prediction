@@ -12,7 +12,7 @@ backorder_predictor._load_model_files()
 
 
 def index(request):
-    return render(request, 'backorder.html')
+    return render(request, 'backorder/index.html')
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -20,7 +20,7 @@ class PredictView(View):
     http_method_names = ['post', 'get']
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'predict.html')
+        return render(request, 'backorder/predict.html')
 
     def post(self, request, *args, **kwargs):
         file = self.request.FILES.get('file')
@@ -35,7 +35,7 @@ class PredictView(View):
                 'y_pred': y_pred,
                 'y_actual': y_actual,
             }
-            return render(request, 'result.html', context)
+            return render(request, 'backorder/result.html', context)
 
         elif all(key in request.POST for key in
                  ['sku', 'national_inv', 'lead_time', 'in_transit_qty', 'forecast_3_month', 'forecast_6_month',
@@ -52,7 +52,7 @@ class PredictView(View):
                 'y_pred': y_pred,
                 'y_actual': y_actual,
             }
-            return render(request, 'result.html', context)
+            return render(request, 'backorder/result.html', context)
 
         else:
-            return render(request, 'predict.html')
+            return render(request, 'backorder/predict.html')
