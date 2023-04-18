@@ -32,6 +32,12 @@ h3 {
     color: #130a44;
 }
 
+h4 {
+    color: #130a44;
+    font-size: 1.5rem;
+    align-self: center;
+}
+
 .benefits-list {
     display: flex;
     flex-wrap: wrap;
@@ -163,7 +169,8 @@ footer p {
     background-color: #e8e3dd;
     border-radius: 1rem;
     grid-column: 1;
-    padding: 20px;
+    padding: 20px 50px;
+    color: #130a44;
 }
 
 .upload-file {
@@ -171,6 +178,7 @@ footer p {
     border-radius: 1rem;
     grid-column: 2;
     padding: 20px;
+    color: #130a44;
 }
 
 .prediction-form label {
@@ -187,6 +195,8 @@ footer p {
     box-sizing: border-box; /* Ensure the input width includes padding and border */
     padding: 3px;
     margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #130a44;
 }
 
 .prediction-form input[type="submit"] {
@@ -195,7 +205,37 @@ footer p {
     border-radius: 5px;
     align-content: center;
     display: inline-block;
-    padding: 10px 20px;
+    padding: 5px 10px;
     color: #130a44;
     font-size: 16px;
+    border: 1px solid #130a44;
+}
+
+.prediction-form input[type="submit"]:hover {
+    background-color: #130a44;
+    color: #e8e3dd;
+}
+
+.upload-file input[type="submit"] {
+    color: #130a44;
+    background-color: #dbe5d3;
+    border-radius: 5px;
+    align-content: center;
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 16px;
+    border: 1px solid #130a44;
+}
+
+.upload-file input[type="submit"]:hover {
+    background-color: #130a44;
+    color: #dbe5d3;
+}
+
+p1 {
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: center;
+    color: #130a44;
+    margin-left: 350px;
 }
