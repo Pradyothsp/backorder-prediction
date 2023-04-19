@@ -6,7 +6,7 @@
     <h2> PREDICTION </h2>
     <p1> Enter the necessary details for making a prediction or upload csv file.</p1>
     <div class="form-wrapper">
-        <form action="/predict/" method="POST" class="prediction-form">
+        <form action="{% url 'predict' %}" method="POST" class="prediction-form">
             {% csrf_token %}
             <h4>Enter the values for the following fields:</h4>
 
@@ -82,7 +82,7 @@
             <input type="submit" value="Submit">
         </form>
 
-        <form action="/predict/" method="post" enctype="multipart/form-data" class="upload-file">
+        <form action="{% url 'predict' %}" method="post" enctype="multipart/form-data" class="upload-file">
             {% csrf_token %}
             <h4>Upload a CSV file:</h4>
             <input type="file" name="file"/>

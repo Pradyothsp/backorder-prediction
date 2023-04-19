@@ -28,14 +28,13 @@ class PredictView(View):
         if file:
             file = request.FILES['file']
             df = pd.read_csv(file)
-            print(df.to_dict('dict'))
             y_pred, y_actual = backorder_predictor.predict(df)
 
             context = {
                 'y_pred': y_pred,
                 'y_actual': y_actual,
             }
-            return render(request, 'backorder/result.html', context)
+            return render(request, 'backorder/result_bulk.html', context)
 
         elif all(key in request.POST for key in
                  ['sku', 'national_inv', 'lead_time', 'in_transit_qty', 'forecast_3_month', 'forecast_6_month',
@@ -43,8 +42,6 @@ class PredictView(View):
                   'pieces_past_due', 'perf_6_month_avg', 'perf_12_month_avg', 'local_bo_qty']):
             form_data = get_form_data(request)
             df = pd.DataFrame(form_data)
-            print(df.to_dict('dict'))
-
 
             y_pred, y_actual = backorder_predictor.predict(df)
 
@@ -52,7 +49,15 @@ class PredictView(View):
                 'y_pred': y_pred,
                 'y_actual': y_actual,
             }
-            return render(request, 'backorder/result.html', context)
+            return render(request, 'backorder/result_single.html', context)
 
         else:
             return render(request, 'backorder/predict.html')
+
+
+def about_us(request):
+    return render(request, 'backorder/about_us.html')
+
+
+def contact_us(request):
+    return render(request, 'backorder/contact_us.html')
