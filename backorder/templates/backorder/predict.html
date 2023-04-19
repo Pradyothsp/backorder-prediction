@@ -3,7 +3,8 @@
 {% block title %}Predict Backorders{% endblock %}
 
 {% block content %}
-    <h2> PREDICTION </h2>
+    <h1 class="predict-header">PREDICTION</h1>
+
     <p1> Enter the necessary details for making a prediction or upload csv file.</p1>
     <div class="form-wrapper">
         <form action="{% url 'predict' %}" method="POST" class="prediction-form">

@@ -4,6 +4,9 @@
 
 {% block content %}
     <h1>Backorder Prediction Results</h1>
-    <p>Predicted values: {{ y_pred }}</p>
-    <p>Actual values: {{ y_actual }}</p>
+    <div class="result-row">
+        <p>Predicted values: {{ y_pred }}</p>
+        <p>Actual values: {{ y_actual }}</p>
+        <p>Accuracy: {{ accuracy }}</p>
+    </div>
 {% endblock %}
