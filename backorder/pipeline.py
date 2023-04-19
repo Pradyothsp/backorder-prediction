@@ -35,8 +35,6 @@ class BackorderPredictor:
         df_test['ppap_risk'] = df_test['ppap_risk'].map(dict_map_bool)
         df_test['stop_auto_buy'] = df_test['stop_auto_buy'].map(dict_map_bool)
         df_test['rev_stop'] = df_test['rev_stop'].map(dict_map_bool)
-        df_test['went_on_backorder'] = df_test['went_on_backorder'].map(
-            dict_map_bool)
 
         return df_test
 
@@ -142,12 +140,10 @@ class BackorderPredictor:
         # Fetching the best features
         df_test_final = self._get_best_features(df_test_trans)
 
-        # Fetching the y_test
-        y_test = self._get_ytest(df_test_trans)
-
-        return df_test_final, y_test
+        return df_test_final
 
     def predict(self, df):
-        df_test_final, y_test = self.preprocessing(df)
+        df_test_final = self.preprocessing(df)
         y_pred_test = self.model.predict(df_test_final)
-        return y_test.tolist(), y_pred_test.tolist()
+        y_pred_test = [int(i) for i in y_pred_test.tolist()]
+        return y_pred_test

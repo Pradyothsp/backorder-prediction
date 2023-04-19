@@ -22,7 +22,6 @@ class FormData:
         self.ppap_risk = None
         self.stop_auto_buy = None
         self.rev_stop = None
-        self.went_on_backorder = None
 
 
 def get_form_data(request):
@@ -59,8 +58,5 @@ def get_form_data(request):
         'Yes' if stop_auto_buy in dict_map_bool and dict_map_bool[stop_auto_buy] == 'Yes' else 'No']
     rev_stop = request.POST.get('rev_stop', 'False')
     form_data.rev_stop = ['Yes' if rev_stop in dict_map_bool and dict_map_bool[rev_stop] == 'Yes' else 'No']
-    went_on_backorder = request.POST.get('went_on_backorder', 'False')
-    form_data.went_on_backorder = [
-        'Yes' if went_on_backorder in dict_map_bool and dict_map_bool[went_on_backorder] == 'Yes' else 'No']
 
     return form_data.__dict__
