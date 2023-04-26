@@ -4,10 +4,11 @@ numpy
 matplotlib
 seaborn
 joblib
-scikit-learn
+scikit-learn==1.2.2
 djangorestframework
 lightgbm
 imblearn
 xgboost
 prettytable
 scipy
+autopep8
