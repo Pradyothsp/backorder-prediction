@@ -136,3 +136,6 @@ dmypy.json
 
 # datasets
 datasets/
+
+# models
+models_pkl/
