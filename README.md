@@ -1,4 +1,4 @@
-# Backorder Prediction - Django Web Application
+****# Backorder Prediction - Django Web Application
 
 This is a Django web application that uses machine learning to predict whether a product will go on backorder or not. It uses a pre-trained Random Forest Classifier, Decision Tree and LGBM models to make predictions based on various features such as product availability, lead time, and more.
 
@@ -23,7 +23,7 @@ source venv/bin/activate
 1. Install the required dependencies by running the following command:
     
     ```bash
-    pip install -r requirements.txt
+    pip install -r requirements/local.txt
     ```
     
 2. Run the Django migrations to set up the database:
