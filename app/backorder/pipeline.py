@@ -18,19 +18,20 @@ class BackorderPredictor:
 
     def _load_model_files(self):
         # Fetching the best features
-        self.best_feat = joblib.load('backorder/model/test_best_feat.pkl').tolist()
+        self.best_feat = joblib.load('/app/backorder/model/test_best_feat.pkl').tolist()
 
         # Fetching the trained standardization object instance
-        self.sc = joblib.load('backorder/model/sc.pkl')
+        self.sc = joblib.load('/app/backorder/model/sc.pkl')
 
         # Fetching the trained model
-        self.model = joblib.load('backorder/model/backorder_best_model.pkl')
+        self.model = joblib.load('/app/backorder/model/backorder_best_model.pkl')
 
     def _encode_bool_columns(self, df_test):
         dict_map_bool = {'Yes': 1.0, 'No': 0.0}
 
         df_test['deck_risk'] = df_test['deck_risk'].map(dict_map_bool)
-        df_test['potential_issue'] = df_test['potential_issue'].map(dict_map_bool)
+        df_test['potential_issue'] = df_test['potential_issue'].map(
+            dict_map_bool)
         df_test['oe_constraint'] = df_test['oe_constraint'].map(dict_map_bool)
         df_test['ppap_risk'] = df_test['ppap_risk'].map(dict_map_bool)
         df_test['stop_auto_buy'] = df_test['stop_auto_buy'].map(dict_map_bool)
@@ -56,7 +57,8 @@ class BackorderPredictor:
 
     def _perform_standardization(self, df_test):
         df_test_num_sc = self.sc.transform(df_test[self.num_col_list].values)
-        df_test_num_sc = pd.DataFrame(df_test_num_sc, index=df_test.index, columns=self.num_col_list)
+        df_test_num_sc = pd.DataFrame(
+            df_test_num_sc, index=df_test.index, columns=self.num_col_list)
         return df_test_num_sc
 
     def add(self, df, num_cols):

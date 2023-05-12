@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from backorder.views import index, PredictView, about_us, contact_us
+from .views import index, PredictView, about_us, contact_us
 
 urlpatterns = [
                   path('', index, name='index'),

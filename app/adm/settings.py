@@ -54,8 +54,7 @@ ROOT_URLCONF = 'adm.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'backorder/templates']
-        ,
+        'DIRS': [BASE_DIR / 'backorder/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
