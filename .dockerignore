@@ -1,5 +1,7 @@
-# .venv
-# datasets
-# model_pkl
-# model.ipynb
-# reports
+.idea
+.static/
+.venv
+.github
+.gitignore
+models_pkl
+model.ipynb

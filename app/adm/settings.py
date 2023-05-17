@@ -115,6 +115,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / "backorder/static",
 ]
+STATIC_ROOT = ".static/"
 
 # https://docs.djangoproject.com/en/4.0/ref/settings/#media-url
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

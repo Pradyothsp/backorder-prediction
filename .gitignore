@@ -139,3 +139,6 @@ datasets/
 
 # models
 models_pkl/
+
+# static
+.static/

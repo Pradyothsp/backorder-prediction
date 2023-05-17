@@ -22,9 +22,11 @@ RUN set -ex \
     && pip install --upgrade pip \
     && pip install --no-cache-dir -r ${BUILD_ENVIRONMENT}.txt
 
+COPY --chown=django:django ./start /start
+RUN sed -i 's/\r$//g' /start
+RUN chmod +x /start
+
 # Working directory
 WORKDIR /app
 
 ADD . /app
-
-# CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
