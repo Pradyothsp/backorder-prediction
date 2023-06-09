@@ -18,13 +18,15 @@ class BackorderPredictor:
 
     def _load_model_files(self):
         # Fetching the best features
-        self.best_feat = joblib.load('/app/backorder/model/test_best_feat.pkl').tolist()
+        self.best_feat = joblib.load(
+            '/app/backorder/model/test_best_feat.pkl').tolist()
 
         # Fetching the trained standardization object instance
         self.sc = joblib.load('/app/backorder/model/sc.pkl')
 
         # Fetching the trained model
-        self.model = joblib.load('/app/backorder/model/backorder_best_model.pkl')
+        self.model = joblib.load(
+            '/app/backorder/model/backorder_best_model.pkl')
 
     def _encode_bool_columns(self, df_test):
         dict_map_bool = {'Yes': 1.0, 'No': 0.0}
