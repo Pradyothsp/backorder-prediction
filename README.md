@@ -23,7 +23,8 @@ git clone https://github.com/Pradyothsp/backorder-prediction.git
 ### Creating Virtual Environment
 
 ```bash
-python3 -m venv venvsource venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
 ```
 
 ### Getting Started
@@ -43,7 +44,8 @@ cd app
 2. Run the Django migrations to set up the database:
     
     ```bash
-    python3 manage.py makemigrationspython3 manage.py migrate
+    python3 manage.py makemigrations
+    python3 manage.py migrate
     ```
     
 3. Start the Django development server:
